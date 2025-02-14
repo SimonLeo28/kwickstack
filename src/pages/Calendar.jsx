@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "../../components/ui/Button";
 import { cn } from "../../lib/utils";
+import Messages from './Messages'
 import {
   add,
   eachDayOfInterval,
@@ -134,6 +135,7 @@ export default function Calendar() {
           ))}
         </div>
       </div>
+      <Messages />
     </div>
   );
 }

@@ -1,41 +1,82 @@
+import React from 'react'
+import { useState } from 'react'
 import logo from '../../images/kwickstack-logo.svg'
 import Calendar from './Calendar'
 import Messages from './Messages'
+import Navbar from './Navbar'
+import { Dialog } from "@headlessui/react";
 
 const Admin = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <>
-    <div className='flex justify-center items-center flex-col'>
-      <img className='p-3' src={logo} alt='KwickStack logo' />
-      <hr className='w-[90%] border-black border-1' />
-    </div>
-
+      <div id='Admin' className="flex justify-center items-center flex-col">
+        <img className="p-3" src={logo} alt="KwickStack logo" />
+        <hr className="w-[90%] border-black border-1" />
+      </div>
 
       {/** Admin Panel Including Navbar */}
-      <div className='p-10 flex justify-start items-start'>
-      <div className="p-6 w-100 bg-white rounded-lg shadow">
-        <h2 className="text-2xl font-bold text-blue-900 mb-4">Admin Dashboard</h2>
-        <div className="space-y-2">
-          <button className="w-full text-left px-4 py-3 hover:bg-yellow-100 bg-white rounded-lg shadow-md font-medium">All</button>
-          <button className="w-full text-left px-4 py-3 hover:bg-yellow-100  bg-white rounded-lg shadow-md font-medium">Client Slot Data</button>
-          <button className="w-full text-left px-4 py-3 hover:bg-yellow-100 bg-white rounded-lg shadow-md font-medium">Invoice</button>
-          <button className="w-full text-left px-4 py-3 hover:bg-yellow-100 bg-white rounded-lg shadow-md font-medium">Blog</button>
+      <div className="p-10 flex flex-col lg:flex-row justify-start items-start gap-5">
+        <Navbar />
+        <div className="flex flex-col w-full gap-5">
+          <h1 className="font-semibold text-2xl">Dashboard</h1>
+          <div className="relative flex justify-end items-end">
+      {/* Add Button */}
+      <button
+        onClick={() => setIsOpen(true)}
+        className="bg-orange-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-orange-600"
+      >
+        + Admin
+      </button>
+
+      {/* Modal */}
+      <Dialog
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+      >
+        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+          {/* Close Button */}
+          <button
+            className="absolute top-2 right-2 text-black hover:text-gray-900"
+            onClick={() => setIsOpen(false)}
+          >
+            ✖
+          </button>
+
+          {/* Modal Title */}
+          <h2 className="text-lg font-semibold text-center">Add Admin Details</h2>
+
+          {/* Input Fields */}
+          <div className="mt-4">
+            <input
+              type="text"
+              placeholder="Enter Name"
+              className="w-full p-2 border rounded-lg mb-3"
+            />
+            <input
+              type="email"
+              placeholder="Enter Email_id"
+              className="w-full p-2 border rounded-lg"
+            />
+          </div>
+
+          {/* Submit Button */}
+          <div className="mt-4 text-center">
+            <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">
+              Add
+            </button>
+          </div>
+        </div>
+      </Dialog>
+    </div>
+          <Calendar />
+          <Messages />
         </div>
       </div>
-
-      <div className='flex flex-col p-3 gap-5 w-full'>
-        <h1 className='font-semibold text-2xl'>Dashboard</h1>
-        <div className='flex justify-end w-full'>
-          <button className='p-3 hover:bg-orange-300 bg-orange-400 rounded-lg'>Admin</button>
-        </div>
-        <Calendar />
-        <Messages />
-      </div>
-      </div>
-
     </>
   )
 }
-
 
 export default Admin;

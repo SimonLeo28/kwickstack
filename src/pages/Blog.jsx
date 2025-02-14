@@ -1,58 +1,93 @@
-import { Eye, Pencil, Trash } from "lucide-react";
+import { Eye, SquarePen, SquarePlus, Trash2 } from "lucide-react";
+import { useState } from "react";
 import logo from '../../images/kwickstack-logo.svg';
-import Navbar from './Navbar';
+import BlogModal from "./BlogModal";
+import Navbar from "./Navbar";
 
-const blogs = [
-  { id: 1, title: "Bootcamp", author: "kas,n,ssaa", image: "📊" },
-  { id: 2, title: "boooootcamp bubble.io", author: "hello", image: "📄" },
-  { id: 3, title: "Laptop Blog", author: "user123", image: "💻" },
-  { id: 4, title: "hello", author: "helllodjkkcj", image: "📷" },
+// Sample blog posts data
+const blogPosts = [
+  { id: 1, title: "Bootcamp", image: "../assets/1212.jpg", author: "John Doe" },
+  { id: 2, title: "React Basics", image: " ", author: "Jane Doe" },
+  { id: 3, title: "Tailwind Tips", image: "../assets/laptop.jpeg", author: "Alex" },
+  { id: 4, title: "Bubble.io Guide", image: "../assets/Power.jpeg", author: "Chris" },
+  { id: 5, title: "Bubble.io", image: " ", author: "bubblebubble"}
 ];
 
-export default function Blog() {
+export default function BlogDashboard() {
+  const [posts, setPosts] = useState(blogPosts); // State for blog posts
+
+  // Function to remove a post by ID
+  const handleDelete = (id) => {
+    setPosts(posts.filter((post) => post.id !== id));
+  };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleAddBlog = () => {
+    setIsModalOpen(true);
+  };
+
   return (
     <>
-    <div className='flex justify-center items-center flex-col'>
-          <img className='p-3' src={logo} alt='KwickStack logo' />
-          <hr className='w-[90%] border-black border-1' />
-        </div>
-    <div className="flex p-8">
-      <Navbar />
-      <div className="flex flex-col justify-start items-start mb-6">
-        <div className="flex justify-around gap-[650px]">
-        <h2 className="text-2xl pl-10 p-3 font-bold">Blog</h2>
-        <button className="bg-yellow-500 ml-10 hover:bg-yellow-900 text-white p-3 rounded-md">+ Add Blog</button>
-        </div>
-        <div className="bg-white w-[900px] pl-10 shadow-md rounded-lg p-4">
-        {blogs.map((blog) => (
-          <div
-            key={blog.id}
-            className="flex items-center border-b last:border-0 py-4"
-          >
-            <div className="text-2xl mr-4">{blog.image}</div>
-            <div className="flex-1">
-              <h3 className="font-semibold">{blog.title}</h3>
-              <p className="text-gray-500 text-sm">{blog.author}</p>
-            </div>
-            <div className="flex space-x-3">
-              <button className="text-gray-600 hover:text-yellow-500">
-                <Pencil size={20} />
-              </button>
-              <button className="text-gray-600 hover:text-blue-500">
-                <Eye size={20} />
-              </button>
-              <button className="text-gray-600 hover:text-red-500">
-                <Trash size={20} />
-              </button>
-            </div>
+      <div id="Blog" className='flex justify-center items-center flex-col'>
+            <img className='p-3' src={logo} alt='KwickStack logo' />
+            <hr className='w-[90%] border-black border-1' />
           </div>
-        ))}
-      </div>
-      </div>
 
-      
-    </div>
+
+      <div className='p-10 flex justify-start items-start'>
+        <Navbar />
+        <div className='flex flex-col p-5 gap-2 w-full'>
+
+        {/* Blog Header */}
+        <div className="flex flex-row justify-between items-center min-w-[10px] my-6 gap-4">
+          <h2 className="text-2xl font-bold">Blog</h2>
+        
+          {/* Add Blog Button */}
+          <button className="flex flex-row bg-[#fd9600] hover:bg-[#f0e9cd] text-black font-semibold gap-2 px-4 py-3 mt-10 rounded-lg shadow"
+            onClick={handleAddBlog}><SquarePlus/>Add Blog
+          </button>
+        </div>
+        <BlogModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+        {/* Table container with horizontal scroll on small screens */}
+        <div className="bg-white shadow-lg rounded-lg p-4 overflow-x-auto">
+          <table className="w-full border-collapse min-w-[300px]">
+          
+            {/* Table body with blog post data */}
+            <tbody>
+              {posts.map((post) => (
+                <tr key={post.id} className="border-b">
+                  <td className="p-2 text-center">{post.id}</td>
+                
+                  {/* Display image (if available) and title */}
+                  <td className="p-2 flex items-center gap-4">
+                    {post.image && <img src={post.image} alt="Blog" className="w-20 h-20 rounded object-cover" />}
+                    <span className="font-semibold text-sm md:text-base">{post.title}</span>
+                  </td>
+                
+                  <td className="p-2 text-sm md:text-base">{post.author}</td>
+
+                  {/* Action buttons: Edit, View, Delete */}
+                  <td className="p-2 flex justify-center gap-2">
+                    <button className="text-yellow-500 hover:text-blue-700">
+                      <SquarePen size={18} />
+                    </button>
+                    <button className="text-black-500">
+                      <Eye size={18} />
+                    </button>
+                    <button className="text-black-500" onClick={() => handleDelete(post.id)}>
+                      <Trash2 size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          
+          </table>
+        </div>
+        </div>
+      </div>
     </>
   );
 }
-

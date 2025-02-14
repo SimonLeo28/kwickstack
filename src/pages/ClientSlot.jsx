@@ -51,7 +51,7 @@ const ClientSlot = () => {
   ];
   return (
     <>
-    <div className='flex justify-center items-center flex-col'>
+    <div id="ClientSlot" className='flex justify-center items-center flex-col'>
           <img className='p-3' src={logo} alt='KwickStack logo' />
           <hr className='w-[90%] border-black border-1' />
         </div>

@@ -49,23 +49,32 @@ const ClientSlot = () => {
   ];
   return (
     <>
+<<<<<<< HEAD
+     <div className='flex justify-center items-center flex-col'>
+          <img className='p-3' src={logo} alt='KwickStack logo' />
+          <hr className='w-[90%] border-black border-1' />
+        </div>
+
+      
+=======
+>>>>>>> c64ea09b3618bc85638ce1626c23931b545edfbd
     <div className='p-10 flex justify-start items-start'>
       {/* <Navbar/> */}
       <div className='flex flex-col p-3 gap-5 w-full'>
         <h1 className='font-semibold text-2xl pl-20'>CLIENT  CONSULTATION SLOTS DATA</h1>
-        <div className="flex justify-end items-end space-x-4 border p-2 rounded-lg w-full max-w-[720px] bg-white shadow-sm ml-20">
+        <div className="flex justify-end items-end space-x-4 border p-2 rounded-lg w-full max-w-[720px] bg-white shadow-sm ml-20"> */}
       {/* Search Icon and Input */}
-      <div className="flex items-center space-x-2 flex-grow">
+      {/* <div className="flex items-center space-x-2 flex-grow">
         <Search className="text-orange-500" size={20} />
         <input
           type="text"
           placeholder="Search"
           className="outline-none w-full bg-transparent text-gray-700 placeholder-gray-400"
         />
-      </div>
+      </div> */}
 
       {/* Dropdown */}
-      <select
+      {/* <select
         value={selectedOption}
         onChange={(e) => setSelectedOption(e.target.value)}
         className="outline-none bg-transparent text-gray-600"
@@ -104,7 +113,8 @@ const ClientSlot = () => {
     </div>
       </div>
       
-    </div>
+    </div> }
+
     </>
   )
 }

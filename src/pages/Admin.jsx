@@ -4,6 +4,7 @@ import Calendar from "./Calendar";
 import Navbar from "./Navbar";
 import { Dialog } from "@headlessui/react";
 import ClientSlot from "./ClientSlot";
+import Blog from "./Blog";
 
 const Admin = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -77,7 +78,7 @@ const Admin = () => {
             {selectedSection === "All" && <Calendar />}
             {selectedSection === "Client Slot Data" && <ClientSlot />}
             {selectedSection === "Invoice" && <p>Invoice Details</p>}
-            {selectedSection === "Blog" && <p>Blog Management</p>}
+            {selectedSection === "Blog" && <Blog />}
           </div>
 
           

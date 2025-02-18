@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
-import logo from '../../images/kwickstack-logo.svg'
-import Navbar from './Navbar'
 
 const ClientSlot = () => {
   const [selectedOption, setSelectedOption] = useState("");
@@ -51,14 +49,17 @@ const ClientSlot = () => {
   ];
   return (
     <>
+<<<<<<< HEAD
      <div className='flex justify-center items-center flex-col'>
           <img className='p-3' src={logo} alt='KwickStack logo' />
           <hr className='w-[90%] border-black border-1' />
         </div>
 
       
+=======
+>>>>>>> c64ea09b3618bc85638ce1626c23931b545edfbd
     <div className='p-10 flex justify-start items-start'>
-      <Navbar/>
+      {/* <Navbar/> */}
       <div className='flex flex-col p-3 gap-5 w-full'>
         <h1 className='font-semibold text-2xl pl-20'>CLIENT  CONSULTATION SLOTS DATA</h1>
         <div className="flex justify-end items-end space-x-4 border p-2 rounded-lg w-full max-w-[720px] bg-white shadow-sm ml-20"> */}

@@ -11,9 +11,7 @@ const blogPosts = [
   { id: 3, title: "Tailwind Tips", image: "../assets/laptop.jpeg", author: "Alex" },
   { id: 4, title: "Bubble.io Guide", image: "../assets/Power.jpeg", author: "Chris" },
   { id: 5, title: "Bubble.io", image: " ", author: "bubblebubble"}
-];
-<<<<<<< HEAD
-
+]
 const Blog = () => {
   const [posts, setPosts] = useState(blogPosts); // State for blog posts
 
@@ -85,7 +83,7 @@ const Blog = () => {
     </>
   );
 }
-=======
+
 
 export default function BlogDashboard() {
   const [posts, setPosts] = useState(blogPosts); // State for blog posts
@@ -103,15 +101,10 @@ export default function BlogDashboard() {
 
   return (
     <>
-      <div id="Blog" className='flex justify-center items-center flex-col'>
-            <img className='p-3' src={logo} alt='KwickStack logo' />
-            <hr className='w-[90%] border-black border-1' />
-          </div>
->>>>>>> 847c0c5b5baf9862d5285fb1d3486c6d13a8fcec
+
 
 
       <div className='p-10 flex justify-start items-start'>
-        <Navbar />
         <div className='flex flex-col p-5 gap-2 w-full'>
 
         {/* Blog Header */}

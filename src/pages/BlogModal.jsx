@@ -1,10 +1,7 @@
 import { useState } from "react";
 
-<<<<<<< HEAD
-const BlogModal = ({ isOpen, onClose }) => {
-=======
-export default function BlogModal({ isOpen, onClose }) {
->>>>>>> 847c0c5b5baf9862d5285fb1d3486c6d13a8fcec
+
+const BlogModal = ({ isOpen, onClose }) =>  {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
@@ -42,10 +39,7 @@ export default function BlogModal({ isOpen, onClose }) {
       </div>
     </div>
   );
-<<<<<<< HEAD
 }
 
+
 export default BlogModal;
-=======
-}
->>>>>>> 847c0c5b5baf9862d5285fb1d3486c6d13a8fcec

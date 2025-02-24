@@ -11,7 +11,7 @@ import Blog from './pages/Blog.jsx';
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Admin />,
   },
   {
     path: "/Admin",

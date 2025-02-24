@@ -32,6 +32,9 @@ const Admin = () => {
               + Admin
             </button>
 
+
+            {/* ✖ */}
+
             <Dialog
         open={isOpen}
         onClose={() => setIsOpen(false)}
@@ -40,11 +43,9 @@ const Admin = () => {
         <div className="bg-white p-6 rounded-lg shadow-lg w-96">
           {/* Close Button */}
           <button
-            className="absolute top-2 right-2 text-black hover:text-gray-900"
-            onClick={() => setIsOpen(false)}
-          >
-            ✖
-          </button>
+          onClick={() => setIsOpen(false)}
+          className="text-black font-extrabold hover:text-orange-500"
+          >X</button>
 
           {/* Modal Title */}
           <h2 className="text-lg font-semibold text-center">Add Admin Details</h2>

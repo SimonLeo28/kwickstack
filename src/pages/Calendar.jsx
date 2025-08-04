@@ -1,8 +1,6 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "../../components/ui/Button";
-import { cn } from "../../lib/utils";
-import Messages from "./Messages";
 import {
   add,
   eachDayOfInterval,
@@ -10,7 +8,6 @@ import {
   format,
   getDay,
   isEqual,
-  isSameDay,
   isSameMonth,
   isToday,
   parse,
@@ -20,140 +17,127 @@ import {
   endOfWeek,
 } from "date-fns";
 
+function normalizeDate(raw) {
+  const cleaned = raw.replace(" and", "");
+  return parse(cleaned, "EEEE dd MMMM yyyy HH:mm", new Date());
+}
+
 export default function Calendar() {
   const today = startOfToday();
   const [selectedDay, setSelectedDay] = useState(today);
   const [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
   const [view, setView] = useState("month");
+  const [reminders, setReminders] = useState({});
+  const [newReminder, setNewReminder] = useState("");
+  const [showInputFor, setShowInputFor] = useState(null);
+  const [slots, setSlots] = useState([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
+  const [slotsError, setSlotsError] = useState(null);
 
   const firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
-
-  // Sample events
-  const events = [
-    { date: new Date(2025, 0, 28, 15, 30), title: "Jan 28, 2025 3:30" },
-    { date: new Date(2025, 1, 3, 15, 0), title: "Feb 3, 2025 3:00 pm" },
-  ];
-
-  const days = eachDayOfInterval({
-    start: startOfWeek(startOfMonth(firstDayCurrentMonth)),
-    end: endOfWeek(endOfMonth(firstDayCurrentMonth)),
-  });
+  const intervalStart = startOfWeek(startOfMonth(firstDayCurrentMonth));
+  const intervalEnd = endOfWeek(endOfMonth(firstDayCurrentMonth));
+  const days = eachDayOfInterval({ start: intervalStart, end: intervalEnd });
 
   function previousMonth() {
-    const firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 });
-    setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
+    setCurrentMonth(format(add(firstDayCurrentMonth, { months: -1 }), "MMM-yyyy"));
+  }
+  function nextMonth() {
+    setCurrentMonth(format(add(firstDayCurrentMonth, { months: 1 }), "MMM-yyyy"));
   }
 
-  function nextMonth() {
-    const firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 });
-    setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
-  }
+  useEffect(() => {
+    setLoadingSlots(true);
+    fetch("https://backend.kwikstack.com/slotCalendar")
+      .then((res) => res.json())
+      .then((data) => {
+        const formatted = data.map((event) => {
+          const parts = event.date.split(" and ");
+          const datePart = parts[0];
+          const timePart = parts[1];
+
+          if (!timePart) {
+            console.warn("Invalid time for event:", event);
+            return null;
+          }
+
+          const dateTimeString = `${datePart}, ${timePart}`;
+          const dateObj = new Date(dateTimeString);
+
+          if (isNaN(dateObj.getTime())) {
+            console.warn("Invalid date for event:", event);
+            return null;
+          }
+
+          return {
+            id: event._id,
+            date: dateObj,
+            time: format(dateObj, "HH:mm"),
+            subject: event.subject || "No Title",
+            dateKey: format(dateObj, "yyyy-MM-dd")
+          };
+        }).filter(Boolean);
+
+        setSlots(formatted);
+        setLoadingSlots(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching slot data:", error);
+        setSlotsError("Failed to load slots.");
+        setLoadingSlots(false);
+      });
+  }, []);
+
+  const slotsByDate = useMemo(() => {
+    const map = {};
+    for (const s of slots) {
+      if (s.dateKey) {
+        if (!map[s.dateKey]) map[s.dateKey] = [];
+        map[s.dateKey].push(s);
+      }
+    }
+    return map;
+  }, [slots]);
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="secondary"
-            className="rounded-md px-3 py-1.5 text-sm font-semibold"
-            onClick={() => setSelectedDay(today)}
-          >
-            Today
-          </Button>
-          <div className="flex gap-1">
-            <Button variant="secondary" onClick={previousMonth} className="p-2">
-              <ChevronLeft className="w-5 h-5" />
-            </Button>
-            <Button variant="secondary" onClick={nextMonth} className="p-2">
-              <ChevronRight className="w-5 h-5" />
-            </Button>
-          </div>
+      {/* header + controls */}
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex gap-2 items-center">
+          <Button onClick={previousMonth}><ChevronLeft /></Button>
+          <Button onClick={nextMonth}><ChevronRight /></Button>
+          <Button onClick={() => setCurrentMonth(format(today, "MMM-yyyy"))}>Today</Button>
         </div>
-        <h2 className="text-lg sm:text-xl font-semibold text-gray-900">{format(firstDayCurrentMonth, "MMMM yyyy")}</h2>
-        <div className="flex gap-1">
-          <Button
-            variant={view === "month" ? "default" : "secondary"}
-            className="rounded-md px-3 py-1.5 text-xs sm:text-sm font-semibold"
-            onClick={() => setView("month")}
-          >
-            Month
-          </Button>
-          <Button
-            variant={view === "week" ? "default" : "secondary"}
-            className="rounded-md px-3 py-1.5 text-xs sm:text-sm font-semibold"
-            onClick={() => setView("week")}
-          >
-            Week
-          </Button>
-          <Button
-            variant={view === "day" ? "default" : "secondary"}
-            className="rounded-md px-3 py-1.5 text-xs sm:text-sm font-semibold"
-            onClick={() => setView("day")}
-          >
-            Day
-          </Button>
-        </div>
+        <h2 className="text-lg font-bold">{format(firstDayCurrentMonth, "MMMM yyyy")}</h2>
       </div>
 
-      {/* Calendar Grid */}
-      <div className="p-4 sm:p-6">
-        <div className="grid grid-cols-7 text-center text-xs font-medium text-gray-500 mb-2 sm:mb-4">
-          <div>Mon</div>
-          <div>Tue</div>
-          <div>Wed</div>
-          <div>Thu</div>
-          <div>Fri</div>
-          <div>Sat</div>
-          <div>Sun</div>
-        </div>
-        <div className="grid grid-cols-7 text-sm gap-1 sm:gap-px bg-gray-200">
-          {days.map((day, dayIdx) => (
-            <div
-              key={day.toString()}
-              className={cn(
-                "bg-white min-h-[80px] sm:min-h-[120px] p-1 sm:p-2",
-                dayIdx === 0 && colStartClasses[getDay(day)]
-              )}
-            >
-              <button
-                type="button"
-                onClick={() => setSelectedDay(day)}
-                className={cn(
-                  "w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full mx-auto text-xs sm:text-sm",
-                  !isSameMonth(day, firstDayCurrentMonth) && "text-gray-400",
-                  isEqual(day, selectedDay) && "bg-yellow-50",
-                  isToday(day) && "text-white bg-primary"
-                )}
-              >
-                <time dateTime={format(day, "yyyy-MM-dd")}>{format(day, "d")}</time>
-              </button>
-              {events.map((event, eventIdx) =>
-                isSameDay(day, event.date) ? (
-                  <div
-                    key={eventIdx}
-                    className="mt-1 sm:mt-2 px-1 sm:px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs rounded bg-orange-500 text-white"
-                  >
-                    {format(event.date, "h:mm aaa")}
-                  </div>
-                ) : null
-              )}
+      {loadingSlots && <p>Loading slots...</p>}
+      {slotsError && <p className="text-red-600">{slotsError}</p>}
+
+      <div className="grid grid-cols-7 gap-1 text-center text-sm">
+        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
+          <div key={d} className="font-medium text-gray-600">{d}</div>
+        ))}
+        {days.map((day) => {
+          const dateKey = format(day, "yyyy-MM-dd");
+          const daySlots = slotsByDate[dateKey] || [];
+
+          return (
+            <div key={day.toString()} className="min-h-[90px] bg-gray-100 p-1">
+              <div className="text-xs font-semibold text-gray-700">
+                {format(day, "d")}
+              </div>
+              {daySlots.map((slot) => (
+                <div key={slot.id} className="text-[10px] bg-blue-500 text-white px-1 py-0.5 mt-1 rounded">
+                  {slot.time} — {slot.subject}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
-      <Messages />
     </div>
   );
 }
 
-const colStartClasses = [
-  "",
-  "col-start-1",
-  "col-start-2",
-  "col-start-3",
-  "col-start-4",
-  "col-start-5",
-  "col-start-6",
-  "col-start-7",
-];
+const colStartClasses = ["", "col-start-1", "col-start-2", "col-start-3", "col-start-4", "col-start-5", "col-start-6", "col-start-7"];

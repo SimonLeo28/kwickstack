@@ -120,7 +120,7 @@ const BlogModal = ({ isOpen, onClose }) => {
   const [imageFile, setImageFile] = useState(""); // for base64
   const [preview, setPreview] = useState(""); // for UI
 
-  const jwt = "kwikstackAdmin"
+  const jwt = localStorage.getItem("token");
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];

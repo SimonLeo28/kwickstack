@@ -48,7 +48,7 @@ export default function Calendar() {
 
   useEffect(() => {
     setLoadingSlots(true);
-    fetch("https://backend.kwikstack.com/slotCalendar")
+    fetch("https://kwikstack-admin-backend.onrender.com/slotCalendar")
       .then((res) => res.json())
       .then((data) => {
         const formatted = data.map((event) => {

@@ -104,7 +104,7 @@ const ClientSlot = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://backend.kwikstack.com/slotDetails");
+        const response = await axios.get("https://kwikstack-admin-backend.onrender.com/slotDetails");
         setData(response.data);
       } catch (error) {
         console.error("Error fetching slot details:", error);

@@ -120,6 +120,8 @@ const BlogModal = ({ isOpen, onClose }) => {
   const [imageFile, setImageFile] = useState(""); // for base64
   const [preview, setPreview] = useState(""); // for UI
 
+  const jwt = "kwikstackAdmin"
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -151,6 +153,7 @@ const BlogModal = ({ isOpen, onClose }) => {
       const response = await axios.post("https://kwikstack-admin-backend.onrender.com/AddBlog", payload, {
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`
         },
         withCredentials: true,
       });

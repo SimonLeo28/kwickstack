@@ -25,7 +25,7 @@ const Admin = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/AddUser",
+        "https://kwikstack-admin-backend.onrender.com/AddUser",
         {
           username: adminUsername,
           password: adminPassword,

@@ -11,7 +11,7 @@ export default function BlogDashboard() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/blog");
+        const res = await axios.get("https://kwikstack-admin-backend.onrender.com/blog");
         setPosts(res.data);
       } catch (error) {
         console.error("Error fetching blogs:", error);
@@ -24,7 +24,7 @@ export default function BlogDashboard() {
   // Delete a blog post by ID
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/blog/${id}`);
+      await axios.delete(`https://kwikstack-admin-backend.onrender.com/blog/${id}`);
       setPosts(posts.filter((post) => post._id !== id));
     } catch (error) {
       console.error("Error deleting blog:", error);

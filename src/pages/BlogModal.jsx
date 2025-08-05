@@ -148,7 +148,7 @@ const BlogModal = ({ isOpen, onClose }) => {
         imageUrl: image,
       });
 
-      const response = await axios.post("http://localhost:3000/AddBlog", payload, {
+      const response = await axios.post("https://kwikstack-admin-backend.onrender.com/AddBlog", payload, {
         headers: {
           "Content-Type": "application/json",
         },

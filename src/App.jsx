@@ -22,7 +22,7 @@ const App = () => {
       //   credentials: "include", // Needed if your backend uses cookies
       //   body: JSON.stringify({ email, password }),
       // });
-      const response = await axios.post("http://localhost:3000/AdminLogin",
+      const response = await axios.post("https://kwikstack-admin-backend.onrender.com/AdminLogin",
         {username,password},{withCredentials: true}
       );
       console.log("Sent")

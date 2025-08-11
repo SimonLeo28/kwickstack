@@ -2,6 +2,7 @@ import { Eye, SquarePen, SquarePlus, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import BlogModal from "./BlogModal";
+import { Link } from "react-router-dom";
 
 export default function BlogDashboard() {
   const [posts, setPosts] = useState([]); // Loaded from backend
@@ -77,12 +78,14 @@ export default function BlogDashboard() {
                     <td className="p-2 flex justify-center gap-2">
                       {/* <button className="text-yellow-500 hover:text-blue-700">
                         <SquarePen size={18} />
-                      </button>
-                      <button className="text-black-500">
-                        <Eye size={18} />
                       </button> */}
+                      <Link to={`/blog/${post._id}`}>
+                        <button className="text-black-500 hover:text-orange">
+                          <Eye size={18} />
+                        </button>
+                      </Link>
                       <button
-                        className="text-black-500"
+                        className="text-black-500 hover:text-orange"
                         onClick={() => handleDelete(post._id)}
                       >
                         <Trash2 size={18} />

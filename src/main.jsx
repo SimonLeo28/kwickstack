@@ -7,6 +7,7 @@ import App from './App.jsx'
 import Admin from './pages/Admin.jsx'
 import ClientSlot from './pages/ClientSlot.jsx';
 import Blog from './pages/Blog.jsx';
+import BlogDetail from './pages/BlogDetail.jsx';
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
   {
     path: "/Blog",
     element: <Blog />,
+  },
+  {
+    path: "/blog/:id",
+    element: <BlogDetail />,
   },
 ])
 

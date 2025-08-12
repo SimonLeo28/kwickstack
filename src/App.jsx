@@ -26,6 +26,8 @@ const App = () => {
         {username,password},{withCredentials: true}
       );
       console.log("Sent")
+      const token = res.data.token;
+      localStorage.setItem("token", token);
 
       if (response.status === 200) {
         // Login success

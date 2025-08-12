@@ -290,7 +290,7 @@ const BlogModal = ({ isOpen, onClose }) => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     setJwt(token);
-  }, []);
+  }, []); //Redeploy
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];

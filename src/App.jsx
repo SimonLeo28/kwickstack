@@ -29,6 +29,7 @@ const App = () => {
       console.log("Sent")
       const token = response.data.token; //redeploying res error
       localStorage.setItem("token", token);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
       if (response.status === 200) {
         // Login success

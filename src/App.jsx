@@ -27,7 +27,7 @@ const App = () => {
         {username,password},{withCredentials: true}
       );
       console.log("Sent")
-      const token = response.data.token.json(); //redeploying res error
+      const token = response.data.token; //redeploying res error
       localStorage.setItem("token", token);
 
       if (response.status === 200) {

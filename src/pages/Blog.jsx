@@ -41,7 +41,7 @@ export default function BlogDashboard() {
       <div className='p-10 flex justify-start items-start'>
         <div className='flex flex-col p-5 gap-2 w-full'>
           {/* Blog Header */}
-          <div className="flex flex-row justify-between items-center min-w-[10px] my-6 gap-4">
+          <div className="flex flex-row  justify-between items-center min-w-[10px] my-6 gap-4">
             <h2 className="text-2xl font-bold">Blog</h2>
             <button
               className="flex flex-row bg-[#fd9600] hover:bg-[#f0e9cd] text-black font-semibold gap-2 px-4 py-3 mt-10 rounded-lg shadow"
@@ -54,13 +54,13 @@ export default function BlogDashboard() {
           <BlogModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
           {/* Blog Table */}
-          <div className="bg-white shadow-lg rounded-lg p-4 overflow-x-auto">
-            <table className="w-full border-collapse min-w-[300px]">
+          <div className="bg-white shadow-lg rounded-lg  overflow-x-auto">
+            <table className="w-full border-collapse min-w-full">
               <tbody>
                 {posts.map((post, index) => (
                   <tr key={post._id || index} className="border-b">
-                    <td className="p-2 text-center">{index + 1}</td>
-                    <td className="p-2 flex items-center gap-4">
+                    <td className="p-0 text-center">{index + 1}</td>
+                    <td className="p-0 flex items-center gap-4">
                       {post.imageUrl && (
                         <img
                           src={post.imageUrl}

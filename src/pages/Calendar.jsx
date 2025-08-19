@@ -6,10 +6,7 @@ import {
   eachDayOfInterval,
   endOfMonth,
   format,
-  getDay,
-  isEqual,
-  isSameMonth,
-  isToday,
+  isSameDay,
   parse,
   startOfMonth,
   startOfToday,
@@ -18,21 +15,17 @@ import {
 } from "date-fns";
 
 function normalizeDate(raw) {
-  const cleaned = raw.replace(" and", "");
-  return parse(cleaned, "EEEE dd MMMM yyyy HH:mm", new Date());
+  // raw example: "Thursday 31 July 2025"
+  return parse(raw, "EEEE dd MMMM yyyy", new Date());
 }
 
 export default function Calendar() {
   const today = startOfToday();
-  const [selectedDay, setSelectedDay] = useState(today);
   const [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
-  const [view, setView] = useState("month");
-  const [reminders, setReminders] = useState({});
-  const [newReminder, setNewReminder] = useState("");
-  const [showInputFor, setShowInputFor] = useState(null);
   const [slots, setSlots] = useState([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [slotsError, setSlotsError] = useState(null);
+  const [reminderDates, setReminderDates] = useState(new Set());
 
   const firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
   const intervalStart = startOfWeek(startOfMonth(firstDayCurrentMonth));
@@ -53,16 +46,18 @@ export default function Calendar() {
       .then((data) => {
         const formatted = data.map((event) => {
           const parts = event.date.split(" and ");
-          const datePart = parts[0];
+          const datePart = parts[0]; // e.g., "Thursday 31 July 2025"
           const timePart = parts[1];
 
-          if (!timePart) {
-            console.warn("Invalid time for event:", event);
-            return null;
-          }
+          let dateObj = normalizeDate(datePart); // parse without time first
 
-          const dateTimeString = `${datePart}, ${timePart}`;
-          const dateObj = new Date(dateTimeString);
+          if (timePart) {
+            const dateTimeString = `${datePart} ${timePart}`;
+            const parsedWithTime = new Date(dateTimeString);
+            if (!isNaN(parsedWithTime.getTime())) {
+              dateObj = parsedWithTime;
+            }
+          }
 
           if (isNaN(dateObj.getTime())) {
             console.warn("Invalid date for event:", event);
@@ -72,13 +67,18 @@ export default function Calendar() {
           return {
             id: event._id,
             date: dateObj,
-            time: format(dateObj, "HH:mm"),
+            time: timePart || "N/A",
             subject: event.subject || "No Title",
             dateKey: format(dateObj, "yyyy-MM-dd")
           };
         }).filter(Boolean);
 
         setSlots(formatted);
+
+        // 🔑 Extract reminder dates into a Set for fast lookup
+        const reminderKeys = new Set(formatted.map((f) => f.dateKey));
+        setReminderDates(reminderKeys);
+
         setLoadingSlots(false);
       })
       .catch((error) => {
@@ -122,14 +122,28 @@ export default function Calendar() {
           const dateKey = format(day, "yyyy-MM-dd");
           const daySlots = slotsByDate[dateKey] || [];
 
+          // 🎨 Apply highlight classes
+          const isTodayDate = isSameDay(day, today);
+          const isReminderDate = reminderDates.has(dateKey);
+
+          const highlightClass = isTodayDate
+            ? "bg-green-500 text-white font-bold"
+            : isReminderDate
+              ? "bg-yellow-300 font-semibold"
+              : "bg-gray-100";
+
           return (
-            <div key={day.toString()} className="min-h-[90px] bg-gray-100 p-1">
-              <div className="text-xs font-semibold text-gray-700">
-                {format(day, "d")}
-              </div>
+            <div
+              key={day.toString()}
+              className={`min-h-[90px] p-1 rounded ${highlightClass}`}
+            >
+              <div className="text-xs">{format(day, "d")}</div>
               {daySlots.map((slot) => (
-                <div key={slot.id} className="text-[10px] bg-blue-500 text-white px-1 py-0.5 mt-1 rounded">
-                  {slot.time} — {slot.subject}
+                <div
+                  key={slot.id}
+                  className="text-[10px] bg-blue-500 text-white px-1 py-0.5 mt-1 rounded"
+                >
+                   {slot.subject}
                 </div>
               ))}
             </div>
@@ -139,5 +153,3 @@ export default function Calendar() {
     </div>
   );
 }
-
-const colStartClasses = ["", "col-start-1", "col-start-2", "col-start-3", "col-start-4", "col-start-5", "col-start-6", "col-start-7"];

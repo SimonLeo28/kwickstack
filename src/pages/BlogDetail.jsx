@@ -47,34 +47,49 @@ function BlogDetail() {
   }
 
   return (
-    <div className="overflow-x-hidden bg-gray-50 min-h-screen">
+    <div className="overflow-x-hidden bg-white min-h-screen w-full">
       {/* Container */}
-      <div className="max-w-4xl mx-auto px-4 md:px-8 lg:px-12 py-10">
+      <div className="w-full max-w-6xl mx-auto px-6 md:px-12 lg:px-20 py-16">
         {/* Back button */}
         <Link to="/Admin">
-          <button className="text-lg font-medium text-orange-500 hover:underline mb-8">
+          <button className="text-base font-medium text-orange-500 hover:underline mb-10">
             ← Back to Blog
           </button>
         </Link>
 
         {/* Blog Title */}
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-gray-900 mb-6">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-snug text-gray-900 mb-6">
           {blog.title}
         </h1>
 
+        {/* Author + Date */}
+        <div className="flex flex-wrap items-center gap-3 text-gray-500 text-sm md:text-base mb-12">
+          <span className="font-medium">{blog.author || "Kwikstack Team"}</span>
+          <span>•</span>
+          <span>
+            {blog.createdAt
+              ? new Date(blog.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })
+              : ""}
+          </span>
+        </div>
+
         {/* Blog Cover Image */}
         {blog.imageUrl && (
-          <div className="mt-6 mb-10 flex justify-center">
+          <div className="mb-12 flex justify-center">
             <img
               src={isBase64(blog.imageUrl) ? blog.imageUrl : blog.imageUrl}
               alt="Blog Cover"
-              className="w-full md:w-[80%] lg:w-[70%] rounded-xl shadow-lg object-cover"
+              className="w-full max-w-4xl rounded-xl shadow-lg object-cover"
             />
           </div>
         )}
 
         {/* Blog Content */}
-        <article className="prose prose-lg prose-gray max-w-none mb-20 leading-relaxed">
+        <article className="prose prose-lg prose-gray max-w-none leading-relaxed text-justify space-y-6">
           <Markdown
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeHighlight]}

@@ -1,91 +1,204 @@
-import { Eye, SquarePen, SquarePlus, Trash2 } from "lucide-react";
+// import { Eye, SquarePen, SquarePlus, Trash2 } from "lucide-react";
+// import { useState, useEffect } from "react";
+// import axios from "axios";
+// import BlogModal from "./BlogModal";
+// import { Link } from "react-router-dom";
+
+// export default function BlogDashboard() {
+//   const [posts, setPosts] = useState([]); // Loaded from backend
+//   const [isModalOpen, setIsModalOpen] = useState(false);
+
+//   // Fetch blogs from backend
+//   useEffect(() => {
+//     const fetchBlogs = async () => {
+//       try {
+//         const res = await axios.get("https://kwikstack-admin-backend.onrender.com/blog");
+//         setPosts(res.data);
+//       } catch (error) {
+//         console.error("Error fetching blogs:", error);
+//       }
+//     };
+
+//     fetchBlogs();
+//   }, []);
+
+//   // Delete a blog post by ID
+//   const handleDelete = async (id) => {
+//     try {
+//       await axios.delete(`https://kwikstack-admin-backend.onrender.com/blog/${id}`);
+//       setPosts(posts.filter((post) => post._id !== id));
+//     } catch (error) {
+//       console.error("Error deleting blog:", error);
+//     }
+//   };
+
+//   const handleAddBlog = () => {
+//     setIsModalOpen(true);
+//   };
+
+//   return (
+//     <>
+//       <div className='p-10 flex justify-start items-start'>
+//         <div className='flex flex-col p-5 gap-2 w-full'>
+//           {/* Blog Header */}
+//           <div className="flex flex-row  justify-between items-center min-w-[10px] my-6 gap-4">
+//             <h2 className="text-2xl font-bold">Blog</h2>
+//             <button
+//               className="flex flex-row bg-[#fd9600] hover:bg-[#f0e9cd] text-black font-semibold gap-2 px-4 py-3 mt-10 rounded-lg shadow"
+//               onClick={handleAddBlog}
+//             >
+//               <SquarePlus />Add Blog
+//             </button>
+//           </div>
+
+//           <BlogModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+//           {/* Blog Table */}
+//           <div className="bg-white shadow-lg rounded-lg  overflow-x-auto">
+//             <table className="w-full border-collapse min-w-full">
+//               <tbody>
+//                 {posts.map((post, index) => (
+//                   <tr key={post._id || index} className="border-b">
+//                     <td className="p-0 text-center">{index + 1}</td>
+//                     <td className="p-0 flex items-center gap-4">
+//                       {post.imageUrl && (
+//                         <img
+//                           src={post.imageUrl}
+//                           alt="Blog"
+//                           className="w-20 h-20 rounded object-cover"
+//                         />
+//                       )}
+//                       <span className="font-semibold text-sm md:text-base">
+//                         {post.title}
+//                       </span>
+//                     </td>
+//                     {/* <td className="p-2 text-sm md:text-base">
+//                       {post.shortDescription}
+//                     </td> */}
+//                     <td className="p-2 flex justify-center gap-2">
+//                       {/* <button className="text-yellow-500 hover:text-blue-700">
+//                         <SquarePen size={18} />
+//                       </button> */}
+//                       <Link to={`/blog/${post._id}`}>
+//                         <button className="text-black-500 hover:text-orange">
+//                           <Eye size={18} />
+//                         </button>
+//                       </Link>
+//                       <button
+//                         className="text-black-500 hover:text-orange"
+//                         onClick={() => handleDelete(post._id)}
+//                       >
+//                         <Trash2 size={18} />
+//                       </button>
+//                     </td>
+//                   </tr>
+//                 ))}
+//               </tbody>
+//             </table>
+//           </div>
+//         </div>
+//       </div>
+//     </>
+//   );
+// }
+import { Eye, SquarePlus, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import BlogModal from "./BlogModal";
 import { Link } from "react-router-dom";
 
 export default function BlogDashboard() {
-  const [posts, setPosts] = useState([]); // Loaded from backend
+  const [posts, setPosts] = useState([]); 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // Fetch blogs from backend
+  // Fetch blogs
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
+        setLoading(true);
         const res = await axios.get("https://kwikstack-admin-backend.onrender.com/blog");
         setPosts(res.data);
       } catch (error) {
         console.error("Error fetching blogs:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchBlogs();
   }, []);
 
-  // Delete a blog post by ID
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`https://kwikstack-admin-backend.onrender.com/blog/${id}`);
-      setPosts(posts.filter((post) => post._id !== id));
-    } catch (error) {
-      console.error("Error deleting blog:", error);
-    }
-  };
+  // Delete blog with confirmation
+const handleDelete = async (id) => {
+  const confirmDelete = window.confirm("Are you sure you want to delete this blog?");
+  if (!confirmDelete) return;
 
-  const handleAddBlog = () => {
-    setIsModalOpen(true);
-  };
+  try {
+    // This sends a DELETE request to your backend
+    await axios.delete(`https://kwikstack-admin-backend.onrender.com/blog/${id}`);
+
+    // If backend responds success, update local state
+    setPosts((prev) => prev.filter((post) => post._id !== id));
+  } catch (error) {
+    console.error("Error deleting blog:", error);
+  }
+};
 
   return (
-    <>
-      <div className='p-10 flex justify-start items-start'>
-        <div className='flex flex-col p-5 gap-2 w-full'>
-          {/* Blog Header */}
-          <div className="flex flex-row  justify-between items-center min-w-[10px] my-6 gap-4">
-            <h2 className="text-2xl font-bold">Blog</h2>
-            <button
-              className="flex flex-row bg-[#fd9600] hover:bg-[#f0e9cd] text-black font-semibold gap-2 px-4 py-3 mt-10 rounded-lg shadow"
-              onClick={handleAddBlog}
-            >
-              <SquarePlus />Add Blog
-            </button>
-          </div>
+    <div className="p-4 md:p-10 flex justify-start items-start">
+      <div className="flex flex-col gap-4 w-full">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <h2 className="text-xl md:text-2xl font-bold">Blog</h2>
+          <button
+            className="flex flex-row items-center bg-[#fd9600] hover:bg-[#f0e9cd] text-black font-semibold gap-2 px-4 py-2 rounded-lg shadow"
+            onClick={() => setIsModalOpen(true)}
+          >
+            <SquarePlus size={18} /> Add Blog
+          </button>
+        </div>
 
-          <BlogModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        {/* Blog Modal */}
+        <BlogModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
-          {/* Blog Table */}
-          <div className="bg-white shadow-lg rounded-lg  overflow-x-auto">
-            <table className="w-full border-collapse min-w-full">
+        {/* Blog List */}
+        <div className="bg-white shadow-lg rounded-lg overflow-x-auto">
+          {loading ? (
+            <p className="text-center py-6">Loading blogs...</p>
+          ) : posts.length === 0 ? (
+            <p className="text-center py-6">No blogs available.</p>
+          ) : (
+            <table className="w-full border-collapse min-w-[300px]">
               <tbody>
                 {posts.map((post, index) => (
-                  <tr key={post._id || index} className="border-b">
-                    <td className="p-0 text-center">{index + 1}</td>
-                    <td className="p-0 flex items-center gap-4">
+                  <tr key={post._id || index} className="border-b hover:bg-gray-50">
+                    {/* Index */}
+                    <td className="p-3 text-center text-sm md:text-base">{index + 1}</td>
+
+                    {/* Image + Title */}
+                    <td className="p-3 flex items-center gap-3">
                       {post.imageUrl && (
                         <img
                           src={post.imageUrl}
                           alt="Blog"
-                          className="w-20 h-20 rounded object-cover"
+                          className="w-16 h-16 md:w-20 md:h-20 rounded object-cover"
                         />
                       )}
-                      <span className="font-semibold text-sm md:text-base">
+                      <span className="font-semibold text-sm md:text-base line-clamp-2">
                         {post.title}
                       </span>
                     </td>
-                    {/* <td className="p-2 text-sm md:text-base">
-                      {post.shortDescription}
-                    </td> */}
-                    <td className="p-2 flex justify-center gap-2">
-                      {/* <button className="text-yellow-500 hover:text-blue-700">
-                        <SquarePen size={18} />
-                      </button> */}
+
+                    {/* Actions */}
+                    <td className="p-3 flex justify-center gap-3">
                       <Link to={`/blog/${post._id}`}>
-                        <button className="text-black-500 hover:text-orange">
+                        <button className="text-gray-600 hover:text-[#fd9600]">
                           <Eye size={18} />
                         </button>
                       </Link>
                       <button
-                        className="text-black-500 hover:text-orange"
+                        className="text-gray-600 hover:text-red-600"
                         onClick={() => handleDelete(post._id)}
                       >
                         <Trash2 size={18} />
@@ -95,9 +208,9 @@ export default function BlogDashboard() {
                 ))}
               </tbody>
             </table>
-          </div>
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
 }

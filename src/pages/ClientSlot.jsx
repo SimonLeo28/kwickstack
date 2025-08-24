@@ -181,30 +181,6 @@ const ClientSlot = () => {
         setError(
           "Failed to load data. This is likely a CORS issue on the backend server. Please check the server configuration."
         );
-
-        /*
-         * --- HOW TO FIX THE CORS ISSUE ON YOUR EXPRESS BACKEND ---
-         *
-         * 1. Install the `cors` package in your backend project:
-         * npm install cors
-         *
-         * 2. In your server's main file (e.g., index.js or app.js), configure it like this:
-         *
-         * const express = require('express');
-         * const cors = require('cors');
-         * const app = express();
-         *
-         * // Replace 'https://your-frontend-url.com' with the actual URL of your deployed frontend
-         * const corsOptions = {
-         * origin: 'https://your-frontend-url.com',
-         * credentials: true,
-         * };
-         *
-         * // Use the cors middleware BEFORE your routes
-         * app.use(cors(corsOptions));
-         *
-         * // ... rest of your server setup and routes
-         */
       } finally {
         setLoading(false);
       }
@@ -232,7 +208,7 @@ const ClientSlot = () => {
 
     try {
       await axios.delete(
-        `http://localhost:3000/slot/${id}`
+        `https://kwikstack-admin-backend.onrender.com/slot/${id}`
       );
       setData((prevData) => prevData.filter((item) => item._id !== id));
     } catch (error) {
